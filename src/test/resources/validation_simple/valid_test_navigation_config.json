@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "id": "eu.europa.ec.eurostat.wihp.navigationfilters.action.ActionNavigationFilter",
+      "configuration": {
+        "steps": [
+          {
+            "action": "CLICK",
+            "xpath": "//button",
+            "value": null,
+            "highlight": false,
+            "screenshot": false
+          }
+        ]
+      }
+    }
+  ]
+}

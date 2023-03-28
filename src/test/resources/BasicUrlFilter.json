@@ -1,0 +1,36 @@
+{
+  "id": "eu.europa.ec.eurostat.wihp.urlfilters.stormcrawler.BasicUrlFilter",
+  "name": {
+    "default": "eu.europa.ec.eurostat.wihp.urlfilters.stormcrawler.BasicUrlFilter",
+    "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.stormcrawler.BasicUrlFilter"
+  },
+  "parameters": [
+    {
+      "id": "maxPathRepetition",
+      "name": {
+        "default": "Maximum Path Repetition",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.stormcrawler.basicUrlFilter.maxPathRepetition"
+      },
+      "type": {
+        "type": "integer",
+        "required": true,
+        "minimum": 1,
+        "maximum": 10
+      }
+    },
+    {
+      "id": "maxLength",
+      "name": {
+        "default": "Maximum URL Length",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.stormcrawler.basicUrlFilter.maxLength"
+      },
+      "type": {
+        "type": "integer",
+        "required": true,
+        "minimum": 0,
+        "maximum": 1024
+      }
+    }
+  ]
+}
+

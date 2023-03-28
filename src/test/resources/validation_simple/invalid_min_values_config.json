@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "id": "eu.europa.ec.eurostat.wihp.urlfilters.examples.TestUrlFilter",
+      "configuration": {
+        "character": "e",
+        "minReoccurrence": -1,
+        "maxReoccurrence": -1,
+        "percentage": true,
+        "minPercentage": -1,
+        "maxPercentage": -1,
+        "extraCharacters": ["a", "b", "c"],
+        "extraCharactersMinReoccurrence": [-1, null, -1],
+        "extraCharactersMinReoccurrencePercentage": [-1, null, -1],
+        "extraCharactersExistInDomain": [true, null, false]
+      }
+    },
+    {
+      "id": "eu.europa.ec.eurostat.wihp.urlfilters.stormcrawler.BasicUrlFilter",
+      "configuration": {
+        "maxPathRepetition": -1,
+        "maxLength": -1
+      }
+    }
+  ]
+}

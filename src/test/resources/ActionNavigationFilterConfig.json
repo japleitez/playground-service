@@ -1,0 +1,12 @@
+{
+  "steps": [
+    {
+      "action": "CLICK",
+      "xpath": "//button",
+      "value": null,
+      "highlight": false,
+      "screenshot": false
+    }
+  ],
+  "url": "https://www.google.com"
+}

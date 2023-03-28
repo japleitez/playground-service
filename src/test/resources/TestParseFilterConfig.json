@@ -1,0 +1,6 @@
+{
+  "id": "eu.europa.ec.eurostat.wihp.parsefilters.examples.TestParseFilter",
+  "protocol": "STATIC",
+  "property": "page.title",
+  "url": "https://www.google.com/"
+}

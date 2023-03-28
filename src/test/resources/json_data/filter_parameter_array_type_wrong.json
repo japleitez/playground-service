@@ -1,0 +1,60 @@
+{
+  "string_type": {
+    "type": "string",
+    "required": true,
+    "pattern": "^[a-z]$",
+    "maxLength": 1,
+    "minLength": 1
+  },
+  "integer_type": {
+    "type": "integer",
+    "required": true,
+    "minimum": 0,
+    "maximum": 1000
+  },
+  "boolean_type": {
+    "type": "boolean",
+    "required": true
+  },
+  "number_type": {
+    "type": "number",
+    "required": false,
+    "minimum": 0,
+    "maximum": 100
+  },
+  "string_array_type": {
+    "type": "aaa",
+    "required": false,
+    "arrayType": "string",
+    "pattern": "^[a-z]$",
+    "maxLength": 1,
+    "minLength": 1,
+    "minArrayLength": 0,
+    "maxArrayLength": 10
+  },
+  "integer_array_type": {
+    "type": "cccc",
+    "required": false,
+    "arrayType": "integer",
+    "minimum": 0,
+    "maximum": 100,
+    "minArrayLength": 0,
+    "maxArrayLength": 10
+  },
+  "number_array_type": {
+    "type": "sss",
+    "required": false,
+    "arrayType": "number",
+    "minimum": 0,
+    "maximum": 100,
+    "minArrayLength": 0,
+    "maxArrayLength": 10
+  },
+  "boolean_array_type": {
+    "type": "hhhh",
+    "required": false,
+    "arrayType": "boolean",
+    "minArrayLength": 0,
+    "maxArrayLength": 10
+  }
+}

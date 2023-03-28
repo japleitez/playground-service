@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "scope": "AaAaAa",
+      "path": {
+        "repetition": 1,
+        "length": 11
+      },
+      "patterns": ["AllowPath /digital111/", "DenyPath .+"]
+    },
+    {
+      "scope": "BbBbBb",
+      "path": {
+        "repetition": 2,
+        "length": 22
+      },
+      "patterns": ["AllowPath /digital222/", "DenyPath .+"]
+    },
+    {
+      "scope": "CcCcCc",
+      "path": {
+        "repetition": 3,
+        "length": 33
+      },
+      "patterns": ["AllowPath /digital333/", "DenyPath .+"]
+    }
+  ]
+}

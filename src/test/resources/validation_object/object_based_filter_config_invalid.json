@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "scope": "222222",
+      "path": {
+        "repetition": 22,
+        "length": 2025
+      },
+      "patterns": ["22222 wrong", "22222 again"]
+    },
+    {
+      "scope": "333333",
+      "path": {
+        "repetition": 33,
+        "length": 3024
+      },
+      "patterns": ["33333 wrong", "33333 again"]
+    },
+    {
+      "scope": "444444",
+      "path": {
+        "repetition": 44,
+        "length": 4024
+      },
+      "patterns": ["44444 wrong", "44444 again"]
+    }
+  ]
+}

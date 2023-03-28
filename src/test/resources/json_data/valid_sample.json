@@ -1,0 +1,10 @@
+{
+  "int": 1,
+  "double": 0.5,
+  "boolean": true,
+  "string": "found",
+  "stringArray": ["a", null, "c"],
+  "integerArray": [1, null, 3],
+  "doubleArray": [0.5, null, 0.1],
+  "booleanArray": [true, null, false]
+}

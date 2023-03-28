@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "id": "eu.europa.ec.eurostat.wihp.parsefilters.examples.TestParseFilter",
+      "configuration": {
+        "property": "page.title"
+      }
+    }
+  ]
+}

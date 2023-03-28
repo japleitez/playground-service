@@ -1,0 +1,148 @@
+{
+  "id": "eu.europa.ec.eurostat.wihp.urlfilters.examples.TestUrlFilter",
+  "name": {
+    "default": "Test Filter",
+    "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.TestFilter"
+  },
+  "parameters": [
+    {
+      "id": "character",
+      "name": {
+        "default": "URL should contain this character",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.character"
+      },
+      "type": {
+        "type": "string",
+        "required": true,
+        "pattern": "^[a-z]$",
+        "maxLength": 1,
+        "minLength": 1
+      }
+    },
+    {
+      "id": "minReoccurrence",
+      "name": {
+        "default": "Minimum reoccurrences of the character in the URL",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.minReoccurrence"
+      },
+      "type": {
+        "type": "integer",
+        "required": true,
+        "minimum": 0,
+        "maximum": 1000
+      }
+    },
+    {
+      "id": "maxReoccurrence",
+      "name": {
+        "default": "Maximum reoccurrences of the character in the URL",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.maxReoccurrence"
+      },
+      "type": {
+        "type": "integer",
+        "required": false,
+        "minimum": 0
+      }
+    },
+    {
+      "id": "percentage",
+      "name": {
+        "default": "Should validate the percentage of reoccurrences?",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.percentage"
+      },
+      "type": {
+        "type": "boolean",
+        "required": true
+      }
+    },
+    {
+      "id": "minPercentage",
+      "name": {
+        "default": "Minimum percentage of reoccurrences of the character in the URL",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.minPercentage"
+      },
+      "type": {
+        "type": "number",
+        "required": false,
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    {
+      "id": "maxPercentage",
+      "name": {
+        "default": "Maximum percentage of reoccurrences of the character in the URL",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.maxPercentage"
+      },
+      "type": {
+        "type": "number",
+        "required": false,
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    {
+      "id": "extraCharacters",
+      "name": {
+        "default": "Additional characters that the URL must contain",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.extraCharacters"
+      },
+      "type": {
+        "type": "array",
+        "required": false,
+        "arrayType": "string",
+        "pattern": "^[a-z]$",
+        "maxLength": 1,
+        "minLength": 1,
+        "minArrayLength": 0,
+        "maxArrayLength": 10
+      }
+    },
+    {
+      "id": "extraCharactersMinReoccurrence",
+      "name": {
+        "default": "Minimum reoccurrence for each extra character",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.extraCharactersMinReoccurrence"
+      },
+      "type": {
+        "type": "array",
+        "required": false,
+        "arrayType": "integer",
+        "minimum": 1,
+        "maximum": 10,
+        "minArrayLength": 0,
+        "maxArrayLength": 10
+      }
+    },
+    {
+      "id": "extraCharactersMinReoccurrencePercentage",
+      "name": {
+        "default": "Minimum reoccurrence percentage for each extra character",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.extraCharactersMinReoccurrencePercentage"
+      },
+      "type": {
+        "type": "array",
+        "required": false,
+        "arrayType": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "minArrayLength": 0,
+        "maxArrayLength": 10
+      }
+    },
+    {
+      "id": "extraCharactersExistInDomain",
+      "name": {
+        "default": "Check if character must exist in the domain",
+        "translationKey": "eu.europa.ec.eurostat.wihp.urlfilters.testFilter.extraCharactersExistInDomain"
+      },
+      "type": {
+        "type": "array",
+        "required": false,
+        "arrayType": "boolean",
+        "minArrayLength": 0,
+        "maxArrayLength": 10
+      }
+    }
+  ]
+}

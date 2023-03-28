@@ -1,0 +1,29 @@
+{
+  "id": "eu.europa.ec.eurostat.wihp.parsefilters.examples.TestParseFilter",
+  "name": {
+    "default": "Test Filter",
+    "translationKey": "eu.europa.ec.eurostat.wihp.parsefilters.TestParseFilter"
+  },
+  "help": {
+    "default": "Example of Parse Filter. It will store the title of a page in the specified property."
+  },
+  "parameters": [
+    {
+      "id": "property",
+      "name": {
+        "default": "JSON property that the title will be stored",
+        "translationKey": "eu.europa.ec.eurostat.wihp.parsefilters.testFilter.character"
+      },
+      "type": {
+        "type": "string",
+        "required": true,
+        "pattern": "^[a-zAZ._]*$",
+        "maxLength": 1,
+        "minLength": 100
+      },
+      "help": {
+        "default": "The property to store the title"
+      }
+    }
+  ]
+}

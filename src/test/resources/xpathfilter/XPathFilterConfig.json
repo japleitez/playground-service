@@ -1,0 +1,11 @@
+{
+  "id": "eu.europa.ec.eurostat.wihp.parsefilters.stormcrawler.xpathfilter.XPathFilter",
+  "protocol": "STATIC",
+  "url": "https://www.arhs-group.com/",
+  "patterns": [
+    {
+      "property": "title",
+      "expressions": ["//TITLE", "//META[@name=\"title\"]/@content"]
+    }
+  ]
+}

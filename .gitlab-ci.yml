@@ -1,0 +1,187 @@
+variables:
+  # Default docker image
+  BUILD_IMAGE: registry.fpfis.eu/estat/wihp/docker/alpine-docker-java:0-0-1
+
+  # For AWS ECR
+  AWS_DOCKER_REGISTRY: $AWS_REGISTRY_HOST
+  AWS_ECR_IMAGE_NAME: $AWS_DOCKER_REGISTRY/$AWS_ECR_APPNAME:$CONTAINER_RELEASE_VERSION
+  AWS_REGION: $AWS_DEFAULT_REGION
+  APP_NAME: playground_service
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $AWS_DOCKER_REGISTRY/$APP_NAME:${CI_COMMIT_REF_SLUG}
+
+image: registry.fpfis.eu/estat/wihp/docker/alpine-docker-java:0-0-1
+
+cache:
+  key: '$CI_COMMIT_REF_NAME'
+  paths:
+    - .maven/
+stages:
+  - check
+  - build
+  - test
+  - analyze
+  - package
+  - release
+  - deploy_on_aws
+
+before_script:
+  - export NG_CLI_ANALYTICS="false"
+  - export MAVEN_USER_HOME=`pwd`/.maven
+
+nohttp:
+  needs: []
+  stage: check
+  script:
+    - echo "BRIDGE_TAG value is $BRIDGE_TAG"
+    - ./mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME -s ci_settings.xml
+
+
+maven-compile:
+  needs: []
+  stage: build
+  script:
+    - echo "BRIDGE_TAG value is $BRIDGE_TAG"
+    - echo "BRIDGE_URL_FILTER_TAG value is $BRIDGE_URL_FILTER_TAG"
+    - echo "BRIDGE_PARSE_FILTER_TAG value is $BRIDGE_PARSE_FILTER_TAG"
+    - echo "BRIDGE_NAVIGATION_FILTER_TAG value is $BRIDGE_NAVIGATION_FILTER_TAG"
+    - >
+      if [ -n "$BRIDGE_URL_FILTER_TAG" ]; then
+        ./mvnw -ntp compile -P-webapp -Durl.filters.version="$BRIDGE_URL_FILTER_TAG" -Dmaven.repo.local="$MAVEN_USER_HOME" -s ci_settings.xml;
+         echo "set BRIDGE_URL_FILTER_TAG value to $BRIDGE_URL_FILTER_TAG";
+      elif [  -n "$BRIDGE_PARSE_FILTER_TAG" ]; then
+        ./mvnw -ntp compile -P-webapp -Dparse-filters.version="$BRIDGE_PARSE_FILTER_TAG" -Dmaven.repo.local="$MAVEN_USER_HOME" -s ci_settings.xml;
+        echo "set BRIDGE_PARSE_FILTER_TAG value to $BRIDGE_PARSE_FILTER_TAG";
+      elif [ -n "$BRIDGE_NAVIGATION_FILTER_TAG" ]; then
+        ./mvnw -ntp compile -P-webapp -Dnavigation-filters.version="$BRIDGE_NAVIGATION_FILTER_TAG" -Dmaven.repo.local="$MAVEN_USER_HOME" -s ci_settings.xml;
+        echo "set BRIDGE_NAVIGATION_FILTER_TAG value to $BRIDGE_NAVIGATION_FILTER_TAG";
+      else
+        ./mvnw -ntp compile -P-webapp -Dmaven.repo.local="$MAVEN_USER_HOME" -s ci_settings.xml;
+        echo "BRIDGE_TAG was not defined";
+      fi
+  artifacts:
+    paths:
+      - target/classes/
+      - target/generated-sources/
+    expire_in: 1 year
+
+maven-test:
+  stage: test
+  script:
+    - ./mvnw -ntp verify -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME -Dspring.profiles.active=testcontainers -s ci_settings.xml
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
+    paths:
+      - target/surefire-reports
+      - target/failsafe-reports
+      - target/site
+    expire_in: 1 year
+  cache:
+    - key: 'test_$CI_PIPELINE_ID'
+      paths:
+        - target/
+    - key: '$CI_COMMIT_REF_NAME'
+      paths:
+        - .maven/
+
+maven-dependency:
+  stage: test
+  script:
+    - ./mvnw verify -DskipTests=true -Pdependency -s ci_settings.xml
+  artifacts:
+    reports:
+      junit:
+        - target/dependency-check-junit.xml
+    paths:
+      - target
+    expire_in: 1 year
+
+sonar-qube:
+  stage: analyze
+  needs: ['maven-test']
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.java.binaries=${CI_PROJECT_DIR}/target/classes -Dsonar.junit.reportPaths=${CI_PROJECT_DIR}/target/surefire-reports,${CI_PROJECT_DIR}/target/failsafe-reports -Dsonar.java.libraries=$MAVEN_USER_HOME
+  variables:
+    SONAR_PROJECT_BASE_DIR: '${CI_PROJECT_DIR}'
+    GIT_DEPTH: 0
+    SONAR_HOST_URL: http://datateam-sonar-lb-775679091.eu-west-1.elb.amazonaws.com
+    SONAR_LOGIN: ${CI_PROJECT_DIR}
+  cache:
+    - key: 'test_$CI_PIPELINE_ID'
+      paths:
+        - target/
+    - key: '$CI_COMMIT_REF_NAME'
+      paths:
+        - .maven/
+
+#sonar-analyze:
+#  image: jhipster/jhipster:v7.0.1
+#  stage: analyze
+#  dependencies:
+#    - maven-test
+#  script:
+#    - ./mvnw -ntp org.jacoco:jacoco-maven-plugin:prepare-agent initialize sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+#  allow_failure: true
+#
+#maven-package:
+#  image: jhipster/jhipster:v7.0.1
+#  stage: package
+#  script:
+#    - ./mvnw -ntp verify deploy -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+#  artifacts:
+#    paths:
+#      - target/*.jar
+#      - target/classes
+#    expire_in: 1 year
+# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
+docker-push:
+  stage: release
+  needs: ['maven-test', 'maven-compile']
+  script:
+    - echo "BRIDGE_TAG value is $BRIDGE_TAG"
+    - apk add curl
+    - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$CONTAINER_TEST_IMAGE -Djib.from.auth.username=gitlab-ci-token  -Djib.from.auth.password=$CI_BUILD_TOKEN -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+
+
+deploy_bridge-tag_on_aws:
+  stage: deploy_on_aws
+  needs: ['docker-push']
+  before_script:
+    - apk add --no-cache aws-cli
+  script:
+    - echo "BRIDGE_TAG value is $BRIDGE_TAG"
+    - docker info
+    - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_DOCKER_REGISTRY
+    # If tag is mutable and want to update to the latest
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  rules:
+    - if: '$BRIDGE_TAG !~ "/^$/"'
+      when: on_success
+      variables:
+        CONTAINER_RELEASE_IMAGE: $AWS_DOCKER_REGISTRY/$APP_NAME:${BRIDGE_TAG}
+
+deploy_on_aws:
+  stage: deploy_on_aws
+  needs: ['docker-push']
+  before_script:
+    - apk add --no-cache aws-cli
+  script:
+    - docker info
+    - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_DOCKER_REGISTRY
+    # If tag is mutable and want to update to the latest
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  rules:
+    - if: '$CI_COMMIT_TAG !~ "/^$/"'
+      when: on_success
+      variables:
+        CONTAINER_RELEASE_IMAGE: $AWS_DOCKER_REGISTRY/$APP_NAME:${CI_COMMIT_TAG}
